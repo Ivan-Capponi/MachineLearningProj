@@ -29,25 +29,27 @@ def neuralnet_backpropagation(x, layer, prediction, y, w1, w2):
     neww2 = w2 + tmp_w2
     return {'w1': neww1, 'w2': neww2 }
 
-def generate_dataset():
-    arrList = empty([10,5])
-    testList = empty([10,1])
-    for i in range (0,10):
-        arr = np.random.randint(2, size=5)
+def generate_dataset(x,y):
+    arrList = empty([x,y])
+    testList = empty([x,1])
+    for i in range (0,x):
+        arr = np.random.randint(2, size=y)
         res = 1
-        for j in range(0,5):
+        for j in range(0,y):
             res = res + arr[j]
         testList[i][0] = res%2
         arrList[i] = (arr)
     return {'train': arrList, 'test': testList}
       
-data = generate_dataset()
+data = generate_dataset(10,5)
 X = np.asarray(data['train'])
 Y = np.asarray(data['test'])
 nn = neuralnet_initialization(X,Y)
 loss = []
 
-for i in range(500):
+E = 500
+
+for i in range(E):
     feed = neuralnet_feedforward(X,nn['w1'],nn['w2'])
     back = neuralnet_backpropagation(X, feed['layer'], feed['out'], Y, nn['w1'], nn['w2'])
     loss.append(np.sum(Y - feed['out'])**2) 
@@ -56,7 +58,9 @@ for i in range(500):
     nn['out'] = feed['out']
     
 
+print('Test values:')
 print(Y[:10])
+print('Predicted values')
 print(nn['out'][:10])
 
 t1 = np.arange(0.0, 200, 2)
